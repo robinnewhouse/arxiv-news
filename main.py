@@ -1,19 +1,34 @@
 import aioboto3
 import arxiv
-from fastapi import FastAPI, Query, HTTPException
+from fastapi import FastAPI, Query, HTTPException, Request
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
 # Add CORS middleware
+origins = [
+    "https://d39o03xirwliyr.cloudfront.net",
+    "https://c8141dnq73.execute-api.us-west-2.amazonaws.com/prod",
+    "http://arxiv-news.s3-website-us-west-2.amazonaws.com"
+]
+print(f"Configuring CORS with origins: {origins}")  # Debug print
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://arxiv-news.s3-website-us-west-2.amazonaws.com/"],  # In production, replace with your frontend URL
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origins=origins,
+    allow_credentials=False,
+    allow_methods=["GET"],
     allow_headers=["*"],
 )
+
+# Add a middleware to log headers
+@app.middleware("http")
+async def log_headers(request: Request, call_next):
+    print(f"Request headers: {request.headers}")
+    response = await call_next(request)
+    print(f"Response headers: {response.headers}")
+    return response
 
 # Create a session
 session = aioboto3.Session(region_name='us-west-2')
