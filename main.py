@@ -1,9 +1,7 @@
 import aioboto3
 import arxiv
-from fastapi import FastAPI, Query, Body, HTTPException
+from fastapi import FastAPI, Query, HTTPException
 from typing import List
-from datetime import datetime, timedelta
-from urllib.parse import urlencode
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -29,7 +27,8 @@ async def get_papers_by_discipline(discipline: str):
             KeyConditionExpression='discipline = :discipline',
             ExpressionAttributeValues={
                 ':discipline': discipline
-            }
+            },
+            ScanIndexForward=False
         )
         
         return response['Items']
@@ -38,35 +37,6 @@ async def get_papers_by_discipline(discipline: str):
 async def read_papers(discipline: str = Query(...)):
     papers = await get_papers_by_discipline(discipline)
     return {"papers": papers}
-
-
-# Mock function to summarize papers
-def generate_summary(discipline: str):
-    # This would actually call the LLM API; using mock data here
-    return "Summary of recent papers in " + discipline
-
-@app.get("/summarize")
-async def summarize(discipline: str = Query(...)):
-    summary = generate_summary(discipline)
-    return {"summary": summary}
-
-
-@app.get("/highlights")
-async def get_highlights():
-    # Mock function for retrieving highlights
-    highlights = [{"title": "Highlight Paper", "abstract": "An interesting abstract...", "link": "http://arxiv.org/..."}, ...]
-    return {"highlights": highlights}
-
-@app.get("/")
-async def root():
-    return {
-        "message": "Welcome to the ArXiv Summary API",
-        "endpoints": {
-            "GET /papers": "Get papers by discipline",
-            "GET /summarize": "Generate summary for a discipline",
-            "GET /highlights": "Get paper highlights"
-        }
-    }
 
 # Fetch papers from arXiv API
 async def fetch_arxiv_papers(max_results: int, categories: List[str]):
@@ -86,7 +56,7 @@ async def fetch_arxiv_papers(max_results: int, categories: List[str]):
         paper = {
             "paper_id": result.entry_id.split("/")[-1],
             "date": result.published.strftime("%Y-%m-%d"),
-            "discipline": categories[0], # may be arxiv:term, but so far they are always identical
+            "discipline": categories[0],  # may be arxiv:term, but so far they are always identical
             "title": result.title,
             "summary": result.summary,
             "authors": [author.name for author in result.authors],
@@ -100,7 +70,7 @@ async def fetch_arxiv_papers(max_results: int, categories: List[str]):
 
 async def store_papers_to_dynamodb(papers: List[dict]):
     async with session.resource('dynamodb') as dynamo:
-        table = await dynamo.Table('arxiv-papers')  # Add await here
+        table = await dynamo.Table('arxiv-papers')
         
         # Batch write papers to DynamoDB
         async with table.batch_writer() as batch:

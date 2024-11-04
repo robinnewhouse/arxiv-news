@@ -12,7 +12,48 @@
             padding: 15px;
             margin: 10px 0;
             border-radius: 5px;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease;
         }
+
+        .paper-card:hover {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .paper-card.expanded {
+            background-color: #f8f9fa;
+        }
+
+        .abstract {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 4px;
+            font-size: 0.95em;
+            line-height: 1.5;
+            color: #444;
+        }
+
+        .abstract.show {
+            display: block;
+        }
+
+        .paper-links {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .paper-links a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .paper-links a:hover {
+            text-decoration: underline;
+        }
+
         .loading {
             opacity: 0.5;
         }
@@ -26,6 +67,48 @@
         .controls {
             margin: 20px 0;
         }
+
+        /* Add these styles to your existing CSS */
+        select {
+            width: 400px;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+        
+        optgroup {
+            font-weight: bold;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        option {
+            padding: 4px;
+            color: #666;
+        }
+
+        /* Update the controls class */
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Style for buttons */
+        button {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            background-color: #0066cc;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0052a3;
+        }
     </style>
 </head>
 <body>
@@ -34,9 +117,94 @@
     <!-- Updated controls section -->
     <div class="controls">
         <select id="disciplineSelect">
-            <option value="cs.AI">Artificial Intelligence</option>
-            <option value="cs.CL">Computational Linguistics</option>
-            <option value="cs.ML">Machine Learning</option>
+            <optgroup label="Physics">
+                <optgroup label="Astrophysics">
+                    <option value="astro-ph.CO">Cosmology and Nongalactic Astrophysics</option>
+                    <option value="astro-ph.EP">Earth and Planetary Astrophysics</option>
+                    <option value="astro-ph.GA">Astrophysics of Galaxies</option>
+                    <option value="astro-ph.HE">High Energy Astrophysical Phenomena</option>
+                    <option value="astro-ph.IM">Instrumentation and Methods</option>
+                    <option value="astro-ph.SR">Solar and Stellar Astrophysics</option>
+                </optgroup>
+                <optgroup label="Condensed Matter">
+                    <option value="cond-mat.dis-nn">Disordered Systems and Neural Networks</option>
+                    <option value="cond-mat.mes-hall">Mesoscale and Nanoscale Physics</option>
+                    <option value="cond-mat.mtrl-sci">Materials Science</option>
+                    <option value="cond-mat.other">Other Condensed Matter</option>
+                    <option value="cond-mat.quant-gas">Quantum Gases</option>
+                    <option value="cond-mat.soft">Soft Condensed Matter</option>
+                    <option value="cond-mat.stat-mech">Statistical Mechanics</option>
+                    <option value="cond-mat.str-el">Strongly Correlated Electrons</option>
+                    <option value="cond-mat.supr-con">Superconductivity</option>
+                </optgroup>
+            </optgroup>
+
+            <optgroup label="Computer Science">
+                <optgroup label="Artificial Intelligence">
+                    <option value="cs.AI">Artificial Intelligence</option>
+                    <option value="cs.CL">Computation and Language</option>
+                    <option value="cs.CV">Computer Vision</option>
+                    <option value="cs.LG">Machine Learning</option>
+                    <option value="cs.NE">Neural and Evolutionary Computing</option>
+                </optgroup>
+                <optgroup label="Systems">
+                    <option value="cs.AR">Hardware Architecture</option>
+                    <option value="cs.DC">Distributed Computing</option>
+                    <option value="cs.OS">Operating Systems</option>
+                    <option value="cs.PF">Performance</option>
+                    <option value="cs.SC">Symbolic Computation</option>
+                    <option value="cs.SY">Systems and Control</option>
+                </optgroup>
+                <optgroup label="Theory">
+                    <option value="cs.CC">Computational Complexity</option>
+                    <option value="cs.CE">Computational Engineering</option>
+                    <option value="cs.CG">Computational Geometry</option>
+                    <option value="cs.DS">Data Structures and Algorithms</option>
+                    <option value="cs.DM">Discrete Mathematics</option>
+                    <option value="cs.LO">Logic in Computer Science</option>
+                </optgroup>
+                <optgroup label="Other CS">
+                    <option value="cs.CR">Cryptography and Security</option>
+                    <option value="cs.DB">Databases</option>
+                    <option value="cs.GT">Computer Science and Game Theory</option>
+                    <option value="cs.IR">Information Retrieval</option>
+                    <option value="cs.IT">Information Theory</option>
+                    <option value="cs.PL">Programming Languages</option>
+                    <option value="cs.RO">Robotics</option>
+                    <option value="cs.SE">Software Engineering</option>
+                </optgroup>
+            </optgroup>
+
+            <optgroup label="Mathematics">
+                <optgroup label="Algebra and Geometry">
+                    <option value="math.AG">Algebraic Geometry</option>
+                    <option value="math.AT">Algebraic Topology</option>
+                    <option value="math.CT">Category Theory</option>
+                    <option value="math.DG">Differential Geometry</option>
+                    <option value="math.GR">Group Theory</option>
+                    <option value="math.RT">Representation Theory</option>
+                </optgroup>
+                <optgroup label="Analysis">
+                    <option value="math.AP">Analysis of PDEs</option>
+                    <option value="math.CA">Classical Analysis and ODEs</option>
+                    <option value="math.FA">Functional Analysis</option>
+                    <option value="math.NA">Numerical Analysis</option>
+                </optgroup>
+            </optgroup>
+
+            <optgroup label="Statistics">
+                <option value="stat.ML">Machine Learning</option>
+                <option value="stat.ME">Methodology</option>
+                <option value="stat.TH">Statistics Theory</option>
+                <option value="stat.AP">Applications</option>
+            </optgroup>
+
+            <optgroup label="Quantitative Finance">
+                <option value="q-fin.CP">Computational Finance</option>
+                <option value="q-fin.PM">Portfolio Management</option>
+                <option value="q-fin.TR">Trading and Market Microstructure</option>
+                <option value="q-fin.RM">Risk Management</option>
+            </optgroup>
         </select>
         <button onclick="fetchPapers()">Show Papers</button>
         <button onclick="fetchNewPapers()">Fetch New Papers</button>
@@ -86,14 +254,35 @@
                         <p>No papers found for ${discipline}. Try fetching new papers.</p>
                     `;
                 } else {
-                    papersDiv.innerHTML = data.papers.map(paper => `
-                        <div class="paper-card">
-                            <h3>${paper.title}</h3>
-                            <p><strong>Authors:</strong> ${paper.authors.join(', ')}</p>
-                            <p><strong>Published:</strong> ${paper.published}</p>
-                            <a href="${paper.link}" target="_blank">Read on ArXiv</a>
-                        </div>
-                    `).join('');
+                    const sortedPapers = data.papers.sort((a, b) => 
+                        new Date(b.published) - new Date(a.published)
+                    );
+
+                    papersDiv.innerHTML = sortedPapers.map(paper => {
+                        const publishDate = new Date(paper.published).toISOString().split('T')[0];
+                        const paperId = paper.paper_id || paper.link.split('/').pop().replace('.pdf', '');
+                        const abstractUrl = `https://arxiv.org/abs/${paperId}`;
+                        
+                        return `
+                            <div class="paper-card" onclick="toggleAbstract(this)">
+                                <h3>${paper.title}</h3>
+                                <p><strong>Authors:</strong> ${paper.authors.join(', ')}</p>
+                                <p><strong>Published:</strong> ${publishDate}</p>
+                                <div class="abstract">
+                                    <strong>Abstract:</strong><br>
+                                    ${paper.summary}
+                                </div>
+                                <div class="paper-links">
+                                    <a href="${abstractUrl}" target="_blank" onclick="event.stopPropagation()">
+                                        Read on ArXiv
+                                    </a>
+                                    <a href="${paper.link}" target="_blank" onclick="event.stopPropagation()">
+                                        PDF
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
                     statusDiv.innerHTML = `Showing ${data.papers.length} papers for ${discipline}`;
                 }
             } catch (error) {
@@ -102,6 +291,24 @@
             } finally {
                 papersDiv.classList.remove('loading');
             }
+        }
+
+        // Add this new function to handle abstract toggling
+        function toggleAbstract(element) {
+            const abstract = element.querySelector('.abstract');
+            const wasExpanded = element.classList.contains('expanded');
+            
+            // Close all other expanded abstracts
+            document.querySelectorAll('.paper-card.expanded').forEach(card => {
+                if (card !== element) {
+                    card.classList.remove('expanded');
+                    card.querySelector('.abstract').classList.remove('show');
+                }
+            });
+
+            // Toggle this abstract
+            element.classList.toggle('expanded', !wasExpanded);
+            abstract.classList.toggle('show', !wasExpanded);
         }
 
         // Load AI papers by default when page loads
