@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recent ArXiv Papers</title>
+    
+    <!-- Simple CSS for styling -->
+    <style>
+        .paper-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .loading {
+            opacity: 0.5;
+        }
+        /* Add some basic spacing and layout */
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Recent ArXiv Papers</h1>
+    
+    <!-- Updated controls section -->
+    <div class="controls">
+        <select id="disciplineSelect">
+            <option value="cs.AI">Artificial Intelligence</option>
+            <option value="cs.CL">Computational Linguistics</option>
+            <option value="cs.ML">Machine Learning</option>
+        </select>
+        <button onclick="fetchPapers()">Show Papers</button>
+        <button onclick="fetchNewPapers()">Fetch New Papers</button>
+    </div>
+
+    <!-- Status message div -->
+    <div id="status" style="margin: 10px 0;"></div>
+    <div id="papers"></div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';
+
+        // Function to fetch fresh papers from arXiv
+        async function fetchNewPapers() {
+            const discipline = document.getElementById('disciplineSelect').value;
+            const statusDiv = document.getElementById('status');
+            
+            statusDiv.innerHTML = 'Fetching new papers from arXiv...';
+            
+            try {
+                const response = await fetch(
+                    `${API_BASE_URL}/recent?max_results=50&categories=${discipline}`
+                );
+                const data = await response.json();
+                
+                statusDiv.innerHTML = `${data.message}. Refreshing display...`;
+                // After fetching new papers, display them
+                await fetchPapers();
+            } catch (error) {
+                statusDiv.innerHTML = `Error fetching new papers: ${error.message}`;
+            }
+        }
+
+        async function fetchPapers() {
+            const discipline = document.getElementById('disciplineSelect').value;
+            const papersDiv = document.getElementById('papers');
+            const statusDiv = document.getElementById('status');
+            
+            papersDiv.classList.add('loading');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/papers?discipline=${discipline}`);
+                const data = await response.json();
+                
+                if (data.papers.length === 0) {
+                    papersDiv.innerHTML = `
+                        <p>No papers found for ${discipline}. Try fetching new papers.</p>
+                    `;
+                } else {
+                    papersDiv.innerHTML = data.papers.map(paper => `
+                        <div class="paper-card">
+                            <h3>${paper.title}</h3>
+                            <p><strong>Authors:</strong> ${paper.authors.join(', ')}</p>
+                            <p><strong>Published:</strong> ${paper.published}</p>
+                            <a href="${paper.link}" target="_blank">Read on ArXiv</a>
+                        </div>
+                    `).join('');
+                    statusDiv.innerHTML = `Showing ${data.papers.length} papers for ${discipline}`;
+                }
+            } catch (error) {
+                papersDiv.innerHTML = `<p>Error loading papers: ${error.message}</p>`;
+                statusDiv.innerHTML = '';
+            } finally {
+                papersDiv.classList.remove('loading');
+            }
+        }
+
+        // Load AI papers by default when page loads
+        window.onload = fetchPapers;
+    </script>
+</body>
+</html> 
