@@ -9,7 +9,7 @@ app = FastAPI()
 # Add CORS middleware
 origins = [
     "https://d39o03xirwliyr.cloudfront.net",
-    "https://c8141dnq73.execute-api.us-west-2.amazonaws.com/prod",
+    "https://c8141dnq73.execute-api.us-west-2.amazonaws.com",
     "http://arxiv-news.s3-website-us-west-2.amazonaws.com"
 ]
 print(f"Configuring CORS with origins: {origins}")  # Debug print
